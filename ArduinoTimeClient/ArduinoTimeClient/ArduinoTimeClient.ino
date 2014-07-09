@@ -1,10 +1,14 @@
 /*
-TinyTime
+ArduinoTimeClient
 by Skot West
 
-Queries a little time server and receives a String formatted
-(hr,min,sec,month,day,yr)
-compatible with Time.h setTime command.
+Queries a Java time server (TimerServer.java) and receives a String formatted:
+(hr:min:sec:month:day:yr)  where year is the last two digits from 2000. (Yes, I remember Y2K...so what?)
+This data is parsed and the time is set with the setTime command (from Time.h).
+
+USAGE: compile and run TimeServer. TimeServer will announce its IP. THIS IP MUST BE CODED INTO
+THE "server" BYTE ARRAY FOUND BELOW. This does not use NTP.
+
 */
 
 #include <SPI.h>         
@@ -21,7 +25,7 @@ byte mac[] = {0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED};
 EthernetClient client;
 
 //Remote server
-byte server[] = {192,168,0,117};
+byte server[] = {192,168,0,117}; //put TimeServer IP here!
 int port = 123;
 
 //Input from server
@@ -158,6 +162,9 @@ void loop()
         
         dataString += (String)hour() + ":" + (String)minute() + ":" + (String)second() + " LIGHT = " + dataValue;
         time_t time = now();
+        
+        //Seconds since Jan 1, 1970
+        Serial.println();
         Serial.println(time); 
         
         if(dataFile)
